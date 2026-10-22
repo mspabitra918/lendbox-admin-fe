@@ -3,10 +3,24 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { ErrorBanner, Field, LoadingBlock, PageHeader, Pill, Section, StatusBadge } from "@/components/ui";
+import {
+  ErrorBanner,
+  Field,
+  LoadingBlock,
+  PageHeader,
+  Pill,
+  Section,
+  StatusBadge,
+} from "@/components/ui";
 import { ApiError, api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { display, formatCurrency, formatDate, formatDateTime, humanize } from "@/lib/format";
+import {
+  display,
+  formatCurrency,
+  formatDate,
+  formatDateTime,
+  humanize,
+} from "@/lib/format";
 import type { Agreement, ApplicationDetail, HistoryEntry } from "@/lib/types";
 import { AgreementsPanel } from "./AgreementsPanel";
 import { SensitivePanel } from "./SensitivePanel";
@@ -18,7 +32,10 @@ export default function ApplicationDetailPage() {
   const [app, setApp] = useState<ApplicationDetail | null>(null);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [agreements, setAgreements] = useState<Agreement[]>([]);
-  const [error, setError] = useState<{ message: string; status: number } | null>(null);
+  const [error, setError] = useState<{
+    message: string;
+    status: number;
+  } | null>(null);
 
   const load = useCallback(() => {
     const base = `/admin/applications/${encodeURIComponent(id)}`;
@@ -34,7 +51,10 @@ export default function ApplicationDetailPage() {
         setAgreements(agr);
       })
       .catch((err: Error) => {
-        setError({ message: err.message, status: err instanceof ApiError ? err.status : 0 });
+        setError({
+          message: err.message,
+          status: err instanceof ApiError ? err.status : 0,
+        });
       });
   }, [id]);
 
@@ -46,7 +66,14 @@ export default function ApplicationDetailPage() {
     return (
       <>
         <BackLink />
-        <ErrorBanner message={error.status === 404 ? `Application ${id} was not found.` : error.message} onRetry={error.status === 404 ? undefined : load} />
+        <ErrorBanner
+          message={
+            error.status === 404
+              ? `Application ${id} was not found.`
+              : error.message
+          }
+          onRetry={error.status === 404 ? undefined : load}
+        />
       </>
     );
   }
@@ -66,11 +93,16 @@ export default function ApplicationDetailPage() {
         }
         subtitle={
           <>
-            <span className="font-semibold text-slate-700">{app.id}</span> · {app.reference} · submitted {formatDateTime(app.submittedAt)}
+            <span className="font-semibold text-slate-700">{app.id}</span> ·{" "}
+            {app.reference} · submitted {formatDateTime(app.submittedAt)}
           </>
         }
         actions={
-          <button type="button" className="btn btn-secondary" onClick={() => void load()}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => void load()}
+          >
             Refresh
           </button>
         }
@@ -85,20 +117,71 @@ export default function ApplicationDetailPage() {
         <div className="space-y-6 lg:col-span-2">
           <Section title="Loan request">
             <dl className="grid gap-4 sm:grid-cols-3">
-              <Field label="Amount" value={<span className="text-lg font-extrabold text-navy">{formatCurrency(app.loan.amount)}</span>} />
+              <Field
+                label="Amount"
+                value={
+                  <span className="text-lg font-extrabold text-navy">
+                    {formatCurrency(app.loan.amount)}
+                  </span>
+                }
+              />
               <Field label="Purpose" value={humanize(app.loan.purpose)} />
-              {app.loan.otherPurpose && <Field label="Other purpose" value={app.loan.otherPurpose} />}
+              {app.loan.otherPurpose && (
+                <Field label="Other purpose" value={app.loan.otherPurpose} />
+              )}
             </dl>
           </Section>
 
           <Section title="Personal">
             <dl className="grid gap-4 sm:grid-cols-3">
-              <Field label="Name" value={`${display(p.firstName)} ${display(p.lastName)}`} />
-              <Field label="Email" value={p.email ? <a className="text-brand hover:underline" href={`mailto:${p.email}`}>{p.email}</a> : "—"} />
-              <Field label="Phone" value={p.phone ? <a className="text-brand hover:underline" href={`tel:${p.phone}`}>{p.phone}</a> : "—"} />
-              <Field label="Date of birth" value={p.dobYear ? `${p.dobMonth}/${p.dobDay}/${p.dobYear}` : "—"} />
-              <Field label="SSN" value={p.ssnLast4 ? `•••-••-${p.ssnLast4}` : "—"} />
-              <Field label="Driver's license state" value={display(p.dlState)} />
+              <Field
+                label="Name"
+                value={`${display(p.firstName)} ${display(p.lastName)}`}
+              />
+              <Field
+                label="Email"
+                value={
+                  p.email ? (
+                    <a
+                      className="text-brand hover:underline"
+                      href={`mailto:${p.email}`}
+                    >
+                      {p.email}
+                    </a>
+                  ) : (
+                    "—"
+                  )
+                }
+              />
+              <Field
+                label="Phone"
+                value={
+                  p.phone ? (
+                    <a
+                      className="text-brand hover:underline"
+                      href={`tel:${p.phone}`}
+                    >
+                      {p.phone}
+                    </a>
+                  ) : (
+                    "—"
+                  )
+                }
+              />
+              <Field
+                label="Date of birth"
+                value={
+                  p.dobYear ? `${p.dobMonth}/${p.dobDay}/${p.dobYear}` : "—"
+                }
+              />
+              <Field
+                label="SSN"
+                value={p.ssnLast4 ? `•••-••-${p.ssnLast4}` : "—"}
+              />
+              <Field
+                label="Driver's license state"
+                value={display(p.dlState)}
+              />
               <Field
                 label="Address"
                 value={
@@ -110,8 +193,14 @@ export default function ApplicationDetailPage() {
                   </>
                 }
               />
-              <Field label="Years at address" value={display(p.yearsAtAddress)} />
-              <Field label="Housing" value={`${humanize(p.housingStatus as string)} · ${formatCurrency(p.monthlyHousingCost)}/mo`} />
+              <Field
+                label="Years at address"
+                value={display(p.yearsAtAddress)}
+              />
+              <Field
+                label="Housing"
+                value={`${humanize(p.housingStatus as string)} · ${formatCurrency(p.monthlyHousingCost)}/mo`}
+              />
             </dl>
           </Section>
 
@@ -120,12 +209,23 @@ export default function ApplicationDetailPage() {
               <Field label="Status" value={humanize(e.employmentStatus)} />
               <Field label="Employer" value={display(e.employerName)} />
               <Field label="Job title" value={display(e.jobTitle)} />
-              <Field label="Time employed" value={e.employmentLengthMo ? `${e.employmentLengthMo} months` : "—"} />
+              <Field
+                label="Time employed"
+                value={
+                  e.employmentLengthMo ? `${e.employmentLengthMo} months` : "—"
+                }
+              />
               <Field label="Employer phone" value={display(e.employerPhone)} />
               <Field label="Income source" value={humanize(e.incomeSource)} />
-              <Field label="Net monthly income" value={formatCurrency(e.netMonthlyIncome)} />
+              <Field
+                label="Net monthly income"
+                value={formatCurrency(e.netMonthlyIncome)}
+              />
               <Field label="Pay frequency" value={humanize(e.payFrequency)} />
-              <Field label="Next pay date" value={e.nextPayDate ? formatDate(e.nextPayDate) : "—"} />
+              <Field
+                label="Next pay date"
+                value={e.nextPayDate ? formatDate(e.nextPayDate) : "—"}
+              />
             </dl>
           </Section>
 
@@ -133,18 +233,33 @@ export default function ApplicationDetailPage() {
             <dl className="grid gap-4 sm:grid-cols-3">
               <Field label="Bank" value={display(b.bankName)} />
               <Field label="Account type" value={humanize(b.accountType)} />
-              <Field label="Account" value={b.accountLast4 ? `••••${b.accountLast4}` : "—"} />
+              <Field
+                label="Account"
+                value={b.accountLast4 ? `••••${b.accountLast4}` : "—"}
+              />
               <Field label="Account age" value={humanize(b.accountAge)} />
-              <Field label="Balance band" value={humanize(b.currentBalanceBand)} />
-              <Field label="Direct deposit" value={typeof b.directDeposit === "boolean" ? display(b.directDeposit) : humanize(b.directDeposit)} />
+              <Field
+                label="Balance band"
+                value={humanize(b.currentBalanceBand)}
+              />
+              <Field
+                label="Direct deposit"
+                value={
+                  typeof b.directDeposit === "boolean"
+                    ? display(b.directDeposit)
+                    : humanize(b.directDeposit)
+                }
+              />
             </dl>
           </Section>
 
-          {admin?.role === "super_admin" && <SensitivePanel applicationId={app.id} />}
+          {/* {admin?.role === "super_admin" && (
+            <SensitivePanel applicationId={app.id} />
+          )} */}
 
-          <AgreementsPanel app={app} agreements={agreements} onChanged={load} />
+          {/* <AgreementsPanel app={app} agreements={agreements} onChanged={load} /> */}
 
-          <Section title="Status history">
+          {/* <Section title="Status history">
             {history.length === 0 ? (
               <p className="text-sm text-slate-500">No history yet.</p>
             ) : (
@@ -162,14 +277,19 @@ export default function ApplicationDetailPage() {
                       <StatusBadge status={h.toStatus} />
                     </div>
                     <p className="mt-1 text-xs text-slate-500">
-                      {formatDateTime(h.createdAt)} · {h.admin?.name ?? h.admin?.email ?? humanize(h.actorType)}
+                      {formatDateTime(h.createdAt)} ·{" "}
+                      {h.admin?.name ?? h.admin?.email ?? humanize(h.actorType)}
                     </p>
-                    {h.reason && <p className="mt-1 rounded-md bg-slate-50 px-3 py-2 text-sm text-slate-700">{h.reason}</p>}
+                    {h.reason && (
+                      <p className="mt-1 rounded-md bg-slate-50 px-3 py-2 text-sm text-slate-700">
+                        {h.reason}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ol>
             )}
-          </Section>
+          </Section> */}
         </div>
 
         <div className="space-y-6">
@@ -187,14 +307,18 @@ export default function ApplicationDetailPage() {
               ).map(([key, label]) => (
                 <li key={key} className="flex items-center justify-between">
                   <span className="text-slate-600">{label}</span>
-                  <Pill tone={c[key] ? "green" : "red"}>{c[key] ? "Given" : "Not given"}</Pill>
+                  <Pill tone={c[key] ? "green" : "red"}>
+                    {c[key] ? "Given" : "Not given"}
+                  </Pill>
                 </li>
               ))}
             </ul>
-            <p className="mt-3 text-xs text-slate-500">Consented {formatDateTime(c.consentedAt)}</p>
+            <p className="mt-3 text-xs text-slate-500">
+              Consented {formatDateTime(c.consentedAt)}
+            </p>
           </Section>
 
-          <Section title="Emails">
+          {/* <Section title="Emails">
             {!app.notifications?.length ? (
               <p className="text-sm text-slate-500">No emails sent.</p>
             ) : (
@@ -214,13 +338,19 @@ export default function ApplicationDetailPage() {
                 ))}
               </ul>
             )}
-          </Section>
+          </Section> */}
 
           <Section title="Record">
             <dl className="space-y-3">
-              <Field label="UUID" value={<span className="font-mono text-xs">{app.uuid}</span>} />
+              <Field
+                label="UUID"
+                value={<span className="font-mono text-xs">{app.uuid}</span>}
+              />
               <Field label="Created" value={formatDateTime(app.createdAt)} />
-              <Field label="Status changed" value={formatDateTime(app.statusChangedAt)} />
+              <Field
+                label="Status changed"
+                value={formatDateTime(app.statusChangedAt)}
+              />
               <Field label="Updated" value={formatDateTime(app.updatedAt)} />
             </dl>
           </Section>
@@ -232,7 +362,10 @@ export default function ApplicationDetailPage() {
 
 function BackLink() {
   return (
-    <Link href="/admin/applications" className="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-brand">
+    <Link
+      href="/admin/applications"
+      className="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-brand"
+    >
       ← All applications
     </Link>
   );
