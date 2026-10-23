@@ -46,7 +46,6 @@ export interface Paginated<T> {
 export interface ApplicationSummary {
   id: string;
   uuid: string;
-  reference: string;
   status: ApplicationStatus;
   applicant: { firstName: string; lastName: string; fullName: string; email: string };
   loan: { amount: number; purpose: string };

@@ -97,7 +97,7 @@ function ApplicationsTable() {
           <input
             id="q"
             className="input"
-            placeholder="Name, email, ID or LB- reference"
+            placeholder="Name, email or application ID"
             value={form.q}
             maxLength={254}
             onChange={(e) => setForm({ ...form, q: e.target.value })}
@@ -212,7 +212,6 @@ function ApplicationsTable() {
                       <Link href={`/admin/applications/${app.id}`} className="font-bold text-brand hover:underline" onClick={(e) => e.stopPropagation()}>
                         {app.id}
                       </Link>
-                      <p className="text-xs text-slate-500">{app.reference}</p>
                     </td>
                     <td className="px-4 py-3">
                       <p className="font-semibold text-slate-900">{app.applicant.fullName}</p>

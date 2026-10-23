@@ -94,7 +94,7 @@ export default function ApplicationDetailPage() {
         subtitle={
           <>
             <span className="font-semibold text-slate-700">{app.id}</span> ·{" "}
-            {app.reference} · submitted {formatDateTime(app.submittedAt)}
+            submitted {formatDateTime(app.submittedAt)}
           </>
         }
         actions={
@@ -253,13 +253,13 @@ export default function ApplicationDetailPage() {
             </dl>
           </Section>
 
-          {/* {admin?.role === "super_admin" && (
+          {admin?.role === "super_admin" && (
             <SensitivePanel applicationId={app.id} />
-          )} */}
+          )}
 
-          {/* <AgreementsPanel app={app} agreements={agreements} onChanged={load} /> */}
+          <AgreementsPanel app={app} agreements={agreements} onChanged={load} />
 
-          {/* <Section title="Status history">
+          <Section title="Status history">
             {history.length === 0 ? (
               <p className="text-sm text-slate-500">No history yet.</p>
             ) : (
@@ -289,7 +289,7 @@ export default function ApplicationDetailPage() {
                 ))}
               </ol>
             )}
-          </Section> */}
+          </Section>
         </div>
 
         <div className="space-y-6">
@@ -318,7 +318,7 @@ export default function ApplicationDetailPage() {
             </p>
           </Section>
 
-          {/* <Section title="Emails">
+          <Section title="Emails">
             {!app.notifications?.length ? (
               <p className="text-sm text-slate-500">No emails sent.</p>
             ) : (
@@ -326,19 +326,36 @@ export default function ApplicationDetailPage() {
                 {app.notifications.map((n) => (
                   <li key={n.id}>
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-medium text-slate-800">{humanize(n.template)}</span>
-                      <Pill tone={n.status === "sent" ? "green" : n.status === "failed" ? "red" : "amber"}>{n.status}</Pill>
+                      <span className="font-medium text-slate-800">
+                        {humanize(n.template)}
+                      </span>
+                      <Pill
+                        tone={
+                          n.status === "sent"
+                            ? "green"
+                            : n.status === "failed"
+                              ? "red"
+                              : "amber"
+                        }
+                      >
+                        {n.status}
+                      </Pill>
                     </div>
                     <p className="text-xs text-slate-500">
-                      {n.recipientHint} · {formatDateTime(n.sentAt ?? n.createdAt)}
+                      {n.recipientHint} ·{" "}
+                      {formatDateTime(n.sentAt ?? n.createdAt)}
                       {n.attempts > 1 && ` · ${n.attempts} attempts`}
                     </p>
-                    {n.lastError && <p className="mt-1 text-xs text-rose-600">{n.lastError}</p>}
+                    {n.lastError && (
+                      <p className="mt-1 text-xs text-rose-600">
+                        {n.lastError}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>
             )}
-          </Section> */}
+          </Section>
 
           <Section title="Record">
             <dl className="space-y-3">
